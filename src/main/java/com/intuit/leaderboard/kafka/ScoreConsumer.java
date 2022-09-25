@@ -5,6 +5,7 @@ import com.intuit.leaderboard.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +22,15 @@ public class ScoreConsumer {
     @Autowired
     private Board board;
 
-    @KafkaListener(topics = "leaderboard", containerFactory = "playerKafkaListenerContainerFactory")
+    @KafkaListener(topics = "#{'${kafka.topic}'}", containerFactory = "playerKafkaListenerContainerFactory")
     public void playerConsumer(Player player) {
         logger.info("Received Message with Player : " + player.getName());
         if(player.getScore() < 0) {
             logger.error("Negative player score received : "+ player.getName() + " : " + player.getScore());
+            return;
         }
 
-        //Assign the task updating the leaderboard to a separate thread.
+        //Assign the task of updating the leaderboard to a separate thread.
         Executors.newSingleThreadExecutor().submit(() -> board.updateBoard(player));
     }
 }

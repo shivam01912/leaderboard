@@ -40,7 +40,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Player> greetingKafkaTemplate() {
+    public KafkaTemplate<String, Player> playerKafkaTemplate() {
         return new KafkaTemplate<>(playerProducerFactory());
     }
 }

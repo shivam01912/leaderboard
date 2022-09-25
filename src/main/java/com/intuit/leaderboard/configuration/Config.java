@@ -16,18 +16,11 @@ public class Config {
     @Value("${board.max.size}")
     private int boardMaxSize;
 
-    @Value("${score.file}")
-    private String scoreFile;
-
     public String getBoardImpl() {
         return boardImpl;
     }
 
     public int getBoardMaxSize() {
         return boardMaxSize;
-    }
-
-    public String getScoreFile() {
-        return scoreFile;
     }
 }

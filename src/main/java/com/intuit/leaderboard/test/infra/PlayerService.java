@@ -28,36 +28,23 @@ public class PlayerService {
     private KafkaTopicConfig kafkaTopicConfig;
 
     @Autowired
-    private KafkaTemplate<String, Player> kafkaTemplate;
+    private KafkaTemplate<String, Player> playerKafkaTemplate;
 
     public void sendMessage(Player msg) {
-        kafkaTemplate.send(kafkaTopicConfig.getKafkaTopic(), msg);
+        playerKafkaTemplate.send(kafkaTopicConfig.getKafkaTopic(), msg);
     }
-
-    /*@GetMapping("/populate")
-    public void readFromFile() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:"+config.getScoreFile());
-        try (BufferedReader br = new BufferedReader(new FileReader(file))){
-            for(String line; (line = br.readLine()) != null; ) {
-                String[] playerData = line.split(" ");
-                board.updateBoard(new Player(playerData[0], Integer.parseInt(playerData[1])));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
 
     @PostMapping("/addall")
     public String addAll(@RequestBody List<Player> players) {
         for(Player player: players) {
-            updateScore(player);
+            addOrUpdateScore(player);
         }
 
         return "Successfully published all players to Kafka";
     }
 
-    @PostMapping("/updatescore")
-    public String updateScore(@RequestBody Player player) {
+    @PostMapping("/addorupdate")
+    public String addOrUpdateScore(@RequestBody Player player) {
 
         sendMessage(player);
 

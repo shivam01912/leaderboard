@@ -5,6 +5,7 @@ import com.intuit.leaderboard.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +20,9 @@ public class LeaderService {
     private Board board;
 
     @GetMapping("/leaderboard")
-    public List<Player> getLeaders(@RequestParam int top) {
+    @ResponseBody
+    public List<Player> getLeaders(@RequestParam(defaultValue = "5", required = false) Integer top) {
+        top = (top <= 0)? 5 : top;
         return board.getTopPlayers(top);
     }
 
